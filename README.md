@@ -77,7 +77,7 @@ This transformation was performed with this code
       ptsx[i] = shift_x * cos(-psi) - shift_y * sin(-psi);
       ptsy[i] = shift_x * sin(-psi) + shift_y * cos(-psi);
   }
-  
+
 ```
 
 ## Model Predictive Control with Latency
@@ -90,7 +90,7 @@ To deal with latency we use what we learn in lecture 20.7
 
 Thus to deal with latency we use the kinematics model of the vehicle, the code used in the project was 
 
-
+```cpp
 //Using the model defined in lecture 19.4
 double x0 = 0.0;
 double y0 = 0.0;
@@ -112,3 +112,4 @@ if (time_latency > 0){
     epsi -= (v/Lf) * delta_t * dt ;
 }
 
+```
