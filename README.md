@@ -66,11 +66,12 @@ The computation were performed in the coordinate system of the vehicle. Therefor
 This transformation was performed with this code
 
   for (int i = 0; i< ptsx.size(); i++){
-      //apply translation to (px, py)
+
+      // apply translation to (px, py)
       double shift_x = ptsx[i] - px;
       double shift_y = ptsy[i] - py;
       
-      //apply rotatation with -psi angle
+      // apply rotatation with -psi angle
       ptsx[i] = shift_x * cos(-psi) - shift_y * sin(-psi);
       ptsy[i] = shift_x * sin(-psi) + shift_y * cos(-psi);
   }
