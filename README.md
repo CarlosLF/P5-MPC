@@ -63,7 +63,7 @@ The control inputs are
 
 The update equations are the following
 
-[alt text][UpdateEqs]
+![alt text][UpdateEqs]
 
 An example of the MPC controller results are shown in [MPC Controller Video](
 https://www.dropbox.com/s/151ehq14vydlnys/mpc.mov?dl=0)
