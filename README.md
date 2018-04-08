@@ -65,6 +65,8 @@ The computation were performed in the coordinate system of the vehicle. Therefor
 
 This transformation was performed with this code
 
+```cpp
+
   for (int i = 0; i< ptsx.size(); i++){
 
       // apply translation to (px, py)
@@ -75,7 +77,8 @@ This transformation was performed with this code
       ptsx[i] = shift_x * cos(-psi) - shift_y * sin(-psi);
       ptsy[i] = shift_x * sin(-psi) + shift_y * cos(-psi);
   }
-
+  
+```
 
 ## Model Predictive Control with Latency
 
