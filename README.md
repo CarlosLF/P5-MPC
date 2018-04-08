@@ -65,76 +65,64 @@ The update equations are the following
 
 ![alt text][UpdateEqs]
 
+
+
+## Timestep Length and Elapsed Duration (N & dt)
+
+### Student discusses the reasoning behind the chosen N (timestep length) and dt (elapsed duration between timesteps) values. Additionally the student details the previous values tried.
+
+T is the prediction horizon is the duration over which future predictions are made. The variable T is defined by the product of two other variables, N and dt.
+Where N is the number of timesteps in the horizon, and dt is how much time elapses between actuations. 
+
+In this project I test the following pair of parameters 
+
+1. N=20, dt=0.1, 
+In this case the prediction horizon is large, and the car behaivor is well when the road is straight, or when the turns are small. However when the turns are complicated the vehicle begins to oscillate and gets off the track.
+
+2. N=20, dt=0.5,
+In this case the dt was reduced by a half, and so the value of the horizon T. Whit this change the vehicle never gets off the road, and it follows the referece well.
+
+3. N=12, dt=0.5,
+In this case the number of timessteps in the horizon was reduced, and as the lecture 20.5 says "Beyond that horizon, the environment will change enough that it won't make sense to predict any further into the future." This pair is the option that I choose, since the vehicle's behavior is well on straight and turns, and it never gets off the track.
+
 An example of the MPC controller results are shown in [MPC Controller Video](
 https://www.dropbox.com/s/151ehq14vydlnys/mpc.mov?dl=0)
 
+## Polynomial Fitting and MPC Preprocessing
 
 
-## Tips
+The computation were performed in the coordinate system of the vehicle. Therefore, the waypoints coordinates are transformed into the coordinates of the vehicle. This is acomplish by using a 2D rigid transformation, where the translation is defined by the current pose of the vehicle, and a rotation. Once that the waypoints are defined in the coordinates of the vehicle, we fit a third order polynomial to the waypoints. 
 
-1. It's recommended to test the MPC on basic examples to see if your implementation behaves as desired. One possible example
-is the vehicle starting offset of a straight line (reference). If the MPC implementation is correct, after some number of timesteps
-(not too many) it should find and track the reference line.
-2. The `lake_track_waypoints.csv` file has the waypoints of the lake track. You could use this to fit polynomials and points and see of how well your model tracks curve. NOTE: This file might be not completely in sync with the simulator so your solution should NOT depend on it.
-3. For visualization this C++ [matplotlib wrapper](https://github.com/lava/matplotlib-cpp) could be helpful.)
-4.  Tips for setting up your environment are available [here](https://classroom.udacity.com/nanodegrees/nd013/parts/40f38239-66b6-46ec-ae68-03afd8a601c8/modules/0949fca6-b379-42af-a919-ee50aa304e6a/lessons/f758c44c-5e40-4e01-93b5-1a82aa4e044f/concepts/23d376c7-0195-4276-bdf0-e02f1f3c665d)
-5. **VM Latency:** Some students have reported differences in behavior using VM's ostensibly a result of latency.  Please let us know if issues arise as a result of a VM environment.
 
-## Editor Settings
+## Model Predictive Control with Latency
 
-We've purposefully kept editor configuration files out of this repo in order to
-keep it as simple and environment agnostic as possible. However, we recommend
-using the following settings:
+### The student implements Model Predictive Control that handles a 100 millisecond latency. Student provides details on how they deal with latency.
 
-* indent using spaces
-* set tab width to 2 spaces (keeps the matrices in source code aligned)
+To deal with latency we use what we learn in lecture 20.7
 
-## Code Style
+"A contributing factor to latency is actuator dynamics. For example the time elapsed between when you command a steering angle to when that angle is actually achieved. This could easily be modeled by a simple dynamic system and incorporated into the vehicle model. One approach would be running a simulation using the vehicle model starting from the current state for the duration of the latency. The resulting state from the simulation is the new initial state for MPC."
 
-Please (do your best to) stick to [Google's C++ style guide](https://google.github.io/styleguide/cppguide.html).
+Thus to deal with latency we use the kinematics model of the vehicle, the code used in the project was 
 
-## Project Instructions and Rubric
 
-Note: regardless of the changes you make, your project must be buildable using
-cmake and make!
+//Using the model defined in lecture 19.4
+double x0 = 0.0;
+double y0 = 0.0;
+double psi0 = 0.0;
+double v0 = v;
 
-More information is only accessible by people who are already enrolled in Term 2
-of CarND. If you are enrolled, see [the project page](https://classroom.udacity.com/nanodegrees/nd013/parts/40f38239-66b6-46ec-ae68-03afd8a601c8/modules/f1820894-8322-4bb3-81aa-b26b3c6dcbaf/lessons/b1ff3be0-c904-438e-aad3-2b5379f0e0c3/concepts/1a2255a0-e23c-44cf-8d41-39b8a3c8264a)
-for instructions and the project rubric.
+if (time_latency > 0){
+    double dt = time_latency / 1000.0; // latency in seconds
+    // In the car coordinates psi = 0
+    x0 = v * dt;
+    
+    psi0 =  - (v/Lf) * delta_t * dt ;
+    v0 = v + a_t * dt;
+    
+    //Cross Track Error, lecture 19.10
+    cte += v * sin(epsi) * dt;
+    
+    //Orientation error, lecture 19.10
+    epsi -= (v/Lf) * delta_t * dt ;
+}
 
-## Hints!
-
-* You don't have to follow this directory structure, but if you do, your work
-  will span all of the .cpp files here. Keep an eye out for TODOs.
-
-## Call for IDE Profiles Pull Requests
-
-Help your fellow students!
-
-We decided to create Makefiles with cmake to keep this project as platform
-agnostic as possible. Similarly, we omitted IDE profiles in order to we ensure
-that students don't feel pressured to use one IDE or another.
-
-However! I'd love to help people get up and running with their IDEs of choice.
-If you've created a profile for an IDE that you think other students would
-appreciate, we'd love to have you add the requisite profile files and
-instructions to ide_profiles/. For example if you wanted to add a VS Code
-profile, you'd add:
-
-* /ide_profiles/vscode/.vscode
-* /ide_profiles/vscode/README.md
-
-The README should explain what the profile does, how to take advantage of it,
-and how to install it.
-
-Frankly, I've never been involved in a project with multiple IDE profiles
-before. I believe the best way to handle this would be to keep them out of the
-repo root to avoid clutter. My expectation is that most profiles will include
-instructions to copy files to a new location to get picked up by the IDE, but
-that's just a guess.
-
-One last note here: regardless of the IDE used, every submitted project must
-still be compilable with cmake and make./
-
-## How to write a README
-A well written README file can enhance your project and portfolio.  Develop your abilities to create professional README files by completing [this free course](https://www.udacity.com/course/writing-readmes--ud777).
