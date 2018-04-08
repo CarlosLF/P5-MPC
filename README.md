@@ -38,6 +38,35 @@ Self-Driving Car Engineer Nanodegree Program
 3. Compile: `cmake .. && make`
 4. Run it: `./mpc`.
 
+
+[UpdateEqs]: ./update_eqs.png "Update Equations"
+
+# Rubric
+
+## The Model
+### Student describes their model in detail. This includes the state, actuators and update equations.
+
+As we read in lecture 19, the model used in this project is a kinematic bicycle model. The state of the of the vehicle includes 
+
+1. px, position of the vehicle in the X axis
+2. py, position of the vehicle in the Y axis
+3. psi, vehicle's orientation
+4. v, Velocity of the vehicle
+5. cte, Cross-track error
+6. epsi,  Orientation error
+
+The control inputs are
+
+1. Acceleration
+2. Steering angle
+
+
+The update equations are the following
+
+[alt text][UpdateEqs]
+
+
+
 ## Tips
 
 1. It's recommended to test the MPC on basic examples to see if your implementation behaves as desired. One possible example
