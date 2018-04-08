@@ -63,6 +63,18 @@ https://www.dropbox.com/s/151ehq14vydlnys/mpc.mov?dl=0)
 
 The computation were performed in the coordinate system of the vehicle. Therefore, the waypoints coordinates are transformed into the coordinates of the vehicle. This is acomplish by using a 2D rigid transformation, where the translation is defined by the current pose of the vehicle, and a rotation. Once that the waypoints are defined in the coordinates of the vehicle, we fit a third order polynomial to the waypoints. 
 
+This transformation was performed with this code
+
+  for (int i = 0; i< ptsx.size(); i++){
+      //apply translation to (px, py)
+      double shift_x = ptsx[i] - px;
+      double shift_y = ptsy[i] - py;
+      
+      //apply rotatation with -psi angle
+      ptsx[i] = shift_x * cos(-psi) - shift_y * sin(-psi);
+      ptsy[i] = shift_x * sin(-psi) + shift_y * cos(-psi);
+  }
+
 
 ## Model Predictive Control with Latency
 
