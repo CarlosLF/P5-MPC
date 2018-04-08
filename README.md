@@ -13,8 +13,6 @@ Self-Driving Car Engineer Nanodegree Program
 
 [UpdateEqs]: ./update_eqs.png "Update Equations"
 
-# Rubric
-
 ## The Model
 ### Student describes their model in detail. This includes the state, actuators and update equations.
 
